@@ -8,6 +8,13 @@ React Native app showcasing a simple sports picks UI.
 - **Leagues tab**: a multi-select dropdown with custom chevron icons
 - **Design tokens**: shared colors/spacing/typography in `src/tokens/`
 
+## Prerequisites
+
+- **Node.js**: `>= 22.11.0` (see `package.json` -> `engines.node`)
+- **React Native environment**:
+  - Android: Android Studio + SDKs and an emulator/device
+  - iOS: Xcode (macOS only)
+
 ## Run
 
 Install:
@@ -35,3 +42,23 @@ bundle install
 cd ios && bundle exec pod install && cd ..
 npm run ios
 ```
+
+## Quality checks
+
+```sh
+npm test
+npm run lint
+```
+
+## Decisions
+
+- **Navigation**: bottom tabs via React Navigation to keep the sample app structure obvious and close to common production patterns.
+- **Styling**: centralized tokens in `src/tokens/` to make spacing/type/color consistent and easy to tweak.
+- **UI components**: kept components lightweight and screen-focused (this is intentionally “UI-first” with no backend/data layer).
+
+## With more time
+
+- **Accessibility polish**: audit touch targets, add better screen reader labels, and verify contrast.
+- **Component hardening**: add loading/empty/error states, skeletons, and stronger prop typing for reusable cards/dropdown.
+- **Testing**: add more unit tests around the dropdown behavior and basic screen rendering.
+- **Theming**: support dark mode and/or dynamic themes driven by the token system.
