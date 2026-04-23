@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { League, LeagueSelect } from '../features/leagues/LeagueSelect';
-import { background, fontSize, spacing, text } from '../tokens';
+import * as tokens from '../tokens';
 
 const LEAGUES: League[] = [
   { id: 'nba', name: 'NBA' },
@@ -38,25 +38,25 @@ export function LeaguesScreen() {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: background.base,
+    backgroundColor: tokens.bg_base,
   },
   content: {
-    padding: spacing[24],
-    paddingTop: spacing[32],
+    padding: tokens.SPACING_24,
+    paddingTop: tokens.spacing_32,
   },
   heading: {
-    color: text.primary,
-    fontSize: fontSize[24],
+    color: tokens.colors.gray[0],
+    fontSize: 24,
     fontWeight: '700',
-    marginBottom: spacing[6],
+    marginBottom: tokens.SPACING_6,
   },
   subheading: {
-    color: text.secondary,
-    fontSize: fontSize[14],
+    color: tokens.colors.slate[400],
+    fontSize: 14,
     lineHeight: 20,
-    marginBottom: spacing[32],
+    marginBottom: tokens.spacing_32,
   },
   formGroup: {
-    gap: spacing[8],
+    gap: tokens.spacing_8,
   },
 });

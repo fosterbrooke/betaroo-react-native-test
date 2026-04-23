@@ -6,7 +6,7 @@ import React from 'react';
 import { Platform, StatusBar, Text, TextInput } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { BottomTabNavigator } from './src/navigation/BottomTabNavigator';
-import { background } from './src/tokens';
+import * as tokens from './src/tokens';
 
 const DM_MONO_FONT_FAMILY = Platform.select({
   ios: 'DMMono-Regular',
@@ -29,7 +29,7 @@ const DM_MONO_FONT_FAMILY = Platform.select({
 export default function App() {
   return (
     <SafeAreaProvider>
-      <StatusBar barStyle="light-content" backgroundColor={background.base} />
+      <StatusBar barStyle="light-content" backgroundColor={tokens.bg_base} />
       <NavigationContainer>
         <BottomTabNavigator />
       </NavigationContainer>

@@ -1,6 +1,6 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { statPill, text } from '../../tokens';
+import { Platform, StyleSheet, Text, View } from 'react-native';
+import * as tokens from '../../tokens';
 
 export type StatWindow = 'L5' | 'L10' | 'L20';
 
@@ -9,13 +9,22 @@ type StatPillProps = {
   percentage: number;
 };
 
+const textVerticalCenter =
+  Platform.OS === 'android'
+    ? ({ includeFontPadding: false, textAlignVertical: 'center' as const })
+    : undefined;
+
 export function StatPill({ window: win, percentage }: StatPillProps) {
   return (
     <View style={styles.row}>
       <View style={styles.pill}>
-        <Text style={styles.window}>{win}</Text>
+        <Text style={[tokens.typographyStyles.monoCompact, styles.windowColor, textVerticalCenter]}>
+          {win}
+        </Text>
       </View>
-      <Text style={styles.value}>{percentage}%</Text>
+      <Text style={[tokens.typographyStyles.paragraphTiny, styles.valueColor, textVerticalCenter]}>
+        {percentage}%
+      </Text>
     </View>
   );
 }
@@ -24,24 +33,21 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: statPill.gap,
+    justifyContent: 'center',
+    gap: tokens.SPACING_6,
   },
   pill: {
-    backgroundColor: statPill.background,
-    borderRadius: statPill.borderRadius,
-    height: statPill.height,
+    backgroundColor: tokens.state_success_lighter,
+    borderRadius: tokens.RADIUS_4,
     justifyContent: 'center',
-    paddingHorizontal: statPill.paddingHorizontal,
-    paddingVertical: statPill.paddingVertical,
+    alignItems: 'center',
+    paddingHorizontal: tokens.spacing4,
+    paddingVertical: tokens.spacing4,
   },
-  window: {
-    color: statPill.text,
-    fontSize: statPill.fontSize,
-    fontWeight: statPill.windowFontWeight,
+  windowColor: {
+    color: tokens.state_success_dark,
   },
-  value: {
-    color: text.primary,
-    fontSize: statPill.fontSize,
-    fontWeight: statPill.valueFontWeight,
+  valueColor: {
+    color: tokens.colors.gray[0],
   },
 });

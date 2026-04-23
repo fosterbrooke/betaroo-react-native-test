@@ -7,18 +7,27 @@ import {
   View,
 } from 'react-native';
 import { AddButton } from '../../components/atoms/AddButton';
-import { ConfidenceBadge } from '../../components/atoms/ConfidenceBadge';
+import {
+  ConfidenceBadge,
+  type ConfidenceLabel,
+} from '../../components/atoms/ConfidenceBadge';
 import { OddsDisplay } from '../../components/atoms/OddsDisplay';
 import { StatPill, StatWindow } from '../../components/atoms/StatPill';
-import { ArrowRightIcon, InfoIcon, ShareIcon } from '../../components/icons';
-import { border, card, fontSize, spacing, text } from '../../tokens';
+import * as tokens from '../../tokens';
+import ArrowRightSvg from '../../assets/svgs/first_tab/arrow_right.svg';
+import InfoIcoSvg from '../../assets/svgs/first_tab/info_ico.svg';
+import UploadIcoSvg from '../../assets/svgs/first_tab/upload_ico.svg';
 
 const teamLogo = require('../../assets/svgs/first_tab/team-logo-at-center.png');
+
+/** Horizontal team card outer size — keep in sync with list `snapToInterval` wrappers. */
+export const TEAM_CARD_WIDTH = 196;
+export const TEAM_CARD_HEIGHT = 216;
 
 export type TeamCardData = {
   teamName: string;
   betType: string;
-  confidenceLabel: 'ELITE' | 'STRONG';
+  confidenceLabel: ConfidenceLabel;
   statWindow: StatWindow;
   statPercentage: number;
   odds: string;
@@ -32,7 +41,8 @@ type TeamCardProps = TeamCardData & {
   onShare?: () => void;
 };
 
-const HEADER_ICON_SIZE = 14;
+const HEADER_ICON_DRAW_SIZE = 8.75;
+const HEADER_ICON_COLOR = tokens.colors.gray[400];
 
 export function TeamCard({
   teamName,
@@ -51,30 +61,47 @@ export function TeamCard({
     <View style={styles.card}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.matchupText} numberOfLines={1}>
-          <Text style={styles.matchupTeam}>{matchup.split(' ')[0]}</Text>
-          <Text style={styles.matchupRest}>
-            {' '}
+        <View style={styles.matchupRow}>
+          <Text style={[styles.matchupText, styles.matchupTeam]} numberOfLines={1}>
+            {matchup.split(' ')[0]}
+          </Text>
+          <Text
+            style={[styles.matchupText, styles.matchupRest]}
+            numberOfLines={1}
+            ellipsizeMode="tail"
+          >
             {matchup.slice(matchup.indexOf(' ') + 1)} · {gameTime}
           </Text>
-        </Text>
+        </View>
         <View style={styles.headerIcons}>
           <TouchableOpacity
             onPress={onInfo}
-            style={styles.iconBtn}
+            style={styles.iconWrap}
             accessibilityLabel="Info"
           >
-            <InfoIcon size={HEADER_ICON_SIZE} />
+            <InfoIcoSvg
+              width={HEADER_ICON_DRAW_SIZE}
+              height={HEADER_ICON_DRAW_SIZE}
+              color={HEADER_ICON_COLOR}
+            />
           </TouchableOpacity>
           <TouchableOpacity
             onPress={onShare}
-            style={styles.iconBtn}
+            style={styles.iconWrap}
             accessibilityLabel="Share"
           >
-            <ShareIcon size={HEADER_ICON_SIZE} />
+            <UploadIcoSvg
+              width={HEADER_ICON_DRAW_SIZE}
+              height={HEADER_ICON_DRAW_SIZE}
+              color={HEADER_ICON_COLOR}
+            />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.iconBtn} accessibilityLabel="Next">
-            <ArrowRightIcon size={HEADER_ICON_SIZE} />
+          <TouchableOpacity style={styles.iconWrap} accessibilityLabel="Next">
+            <ArrowRightSvg
+              width={HEADER_ICON_DRAW_SIZE}
+              height={HEADER_ICON_DRAW_SIZE}
+              color={HEADER_ICON_COLOR}
+            />
           </TouchableOpacity>
         </View>
       </View>
@@ -97,7 +124,9 @@ export function TeamCard({
       {/* Footer */}
       <View style={styles.footer}>
         <View style={styles.statsRow}>
-          <StatPill window={statWindow} percentage={statPercentage} />
+          <View style={styles.statsLeft}>
+            <StatPill window={statWindow} percentage={statPercentage} />
+          </View>
           <View style={styles.statsRight}>
             <OddsDisplay odds={odds} />
             <AddButton onPress={onAdd ?? (() => {})} accessibilityLabel={`Add ${teamName}`} />
@@ -108,58 +137,68 @@ export function TeamCard({
   );
 }
 
-const CARD_WIDTH = 196;
-const CARD_HEIGHT = 200;
-const LOGO_SIZE = 54;
+const LOGO_SIZE = 56;
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: card.background,
-    borderRadius: card.borderRadius,
+    backgroundColor: tokens.bg_primary,
+    borderRadius: tokens.radius_8,
     overflow: 'hidden',
-    width: CARD_WIDTH,
-    height: CARD_HEIGHT,
-    shadowColor: card.shadowColor,
-    shadowOffset: card.shadowOffset,
-    shadowOpacity: card.shadowOpacity,
-    shadowRadius: card.shadowRadius,
-    elevation: card.elevation,
+    borderWidth: 1,
+    borderColor: tokens.borderDark,
+    width: TEAM_CARD_WIDTH,
+    height: TEAM_CARD_HEIGHT,
+    ...tokens.cardShadowLarge,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: spacing[10],
-    paddingVertical: spacing[8],
+    paddingLeft: tokens.SPACING_12,
+    paddingRight: tokens.spacing_8,
+    paddingTop: tokens.SPACING_6,
+    paddingBottom: tokens.SPACING_6,
     borderBottomWidth: 1,
-    borderBottomColor: '#202020',
+    borderBottomColor: tokens.borderDark,
+  },
+  matchupRow: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: tokens.spacing4,
+    minWidth: 0,
   },
   matchupText: {
-    color: text.secondary,
-    fontSize: fontSize[10],
+    fontSize: 10,
     fontWeight: '500',
   },
   matchupTeam: {
-    color: text.tertiary,
+    flexShrink: 0,
+    color: tokens.content_tertiary,
   },
   matchupRest: {
-    color: text.disabled,
+    flex: 1,
+    minWidth: 0,
+    color: tokens.content_disabled,
   },
   headerIcons: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing[0],
+    gap: tokens.SPACING_0,
   },
-  iconBtn: {
+  iconWrap: {
+    width: tokens.spacing_14,
+    height: tokens.spacing_14,
+    alignItems: 'center',
+    justifyContent: 'center',
     padding: 0,
   },
   body: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: spacing[12],
-    paddingVertical: spacing[8],
-    gap: spacing[6],
+    padding: tokens.SPACING_12,
+    gap: tokens.spacing_8,
   },
   logoCircle: {
     width: LOGO_SIZE,
@@ -168,7 +207,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#0D2240',
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: border.subtle,
+    borderColor: tokens.colors.slate[800],
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.4,
@@ -181,38 +220,42 @@ const styles = StyleSheet.create({
   },
   infoBlock: {
     alignItems: 'center',
-    gap: spacing[2],
   },
   teamName: {
-    color: text.primary,
-    fontSize: fontSize[14],
-    fontWeight: '700',
+    ...tokens.typographyStyles.labelXTiny,
+    color: tokens.colors.gray[0],
     textAlign: 'center',
   },
   betType: {
-    color: text.secondary,
-    fontSize: fontSize[11],
+    ...tokens.typographyStyles.paragraphTiny,
+    color: tokens.colors.slate[400],
     textAlign: 'center',
+    marginTop: tokens.spacing4,
   },
   badgeRow: {
-    marginTop: spacing[2],
+    marginTop: tokens.spacing4,
   },
   footer: {
     marginTop: 'auto',
     borderTopWidth: 1,
-    borderTopColor: '#202020',
+    borderTopColor: tokens.borderDark,
   },
   statsRow: {
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing[4],
-    paddingHorizontal: spacing[12],
-    paddingVertical: spacing[8],
+    alignItems: 'stretch',
+    height: 36,
+    gap: tokens.spacing4,
+    paddingHorizontal: tokens.SPACING_12,
     justifyContent: 'space-between',
+  },
+  statsLeft: {
+    justifyContent: 'center',
+    flexShrink: 1,
   },
   statsRight: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing[4],
+    justifyContent: 'center',
+    gap: tokens.spacing4,
   },
 });

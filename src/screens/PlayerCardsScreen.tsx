@@ -1,7 +1,7 @@
 import React from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { PlayerCard, PlayerCardData } from '../features/cards/PlayerCard';
-import { background, spacing } from '../tokens';
+import * as tokens from '../tokens';
 
 const CARD_WIDTH = 358;
 const CARD_HEIGHT = 126;
@@ -39,7 +39,7 @@ const PLAYER_CARDS: PlayerCardData[] = [
     playerName: 'LeBron James',
     position: 'SF',
     propLine: '+8 Rebounds',
-    confidenceLabel: 'STRONG',
+    confidenceLabel: 'FAIR',
     stats: [
       { window: 'L5', percentage: 70 },
       { window: 'L10', percentage: 68 },
@@ -67,7 +67,7 @@ const PLAYER_CARDS: PlayerCardData[] = [
     playerName: 'Jayson Tatum',
     position: 'SF',
     propLine: '+30 Points',
-    confidenceLabel: 'STRONG',
+    confidenceLabel: 'RISKY',
     stats: [
       { window: 'L5', percentage: 77 },
       { window: 'L10', percentage: 74 },
@@ -100,11 +100,11 @@ export function PlayerCardsScreen() {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: background.base,
+    backgroundColor: tokens.bg_base,
   },
   list: {
-    padding: spacing[16],
-    gap: spacing[12],
+    padding: tokens.spacing16,
+    gap: tokens.SPACING_12,
     alignItems: 'center',
   },
   cardWrapper: {

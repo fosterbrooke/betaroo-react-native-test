@@ -3,39 +3,6 @@ import Svg, { Defs, LinearGradient, Path, Rect, Stop } from 'react-native-svg';
 
 type IconProps = { size?: number; color?: string };
 
-export function InfoIcon({ size = 16, color = '#A4A4A4' }: IconProps) {
-  return (
-    <Svg width={size} height={size} viewBox="0 0 14 14" fill="none">
-      <Path
-        d="M7 11.375C4.58375 11.375 2.625 9.41622 2.625 7C2.625 4.58375 4.58375 2.625 7 2.625C9.41622 2.625 11.375 4.58375 11.375 7C11.375 9.41622 9.41622 11.375 7 11.375ZM7 5.90625C7.36242 5.90625 7.65625 5.61244 7.65625 5.25C7.65625 4.88756 7.36242 4.59375 7 4.59375C6.63758 4.59375 6.34375 4.88756 6.34375 5.25C6.34375 5.61244 6.63758 5.90625 7 5.90625ZM7.875 8.3125H7.4375V6.34375H6.125V7.21875H6.5625V8.3125H6.125V9.1875H7.875V8.3125Z"
-        fill={color}
-      />
-    </Svg>
-  );
-}
-
-export function ShareIcon({ size = 16, color = '#A4A4A4' }: IconProps) {
-  return (
-    <Svg width={size} height={size} viewBox="0 0 14 14" fill="none">
-      <Path
-        d="M9.8063 5.68756L7.00009 2.88135L4.19385 5.68756H6.5625V8.75H7.4375V5.68756H9.8063ZM3.0625 7.875V9.625C3.0625 10.3499 3.65013 10.9375 4.375 10.9375H9.625C10.3499 10.9375 10.9375 10.3499 10.9375 9.625V7.875H10.0625V9.625C10.0625 9.86663 9.86663 10.0625 9.625 10.0625H4.375C4.13338 10.0625 3.9375 9.86663 3.9375 9.625V7.875H3.0625Z"
-        fill={color}
-      />
-    </Svg>
-  );
-}
-
-export function ArrowRightIcon({ size = 16, color = '#A4A4A4' }: IconProps) {
-  return (
-    <Svg width={size} height={size} viewBox="0 0 14 14" fill="none">
-      <Path
-        d="M7.55709 6.99947L4.95834 4.40072L5.70069 3.65837L9.04179 6.99947L5.70069 10.3406L4.95834 9.59822L7.55709 6.99947Z"
-        fill={color}
-      />
-    </Svg>
-  );
-}
-
 export function ChevronUpIcon({ size = 20, color = '#A4A4A4' }: IconProps) {
   return (
     <Svg width={size} height={size} viewBox="0 0 20 20" fill="none">

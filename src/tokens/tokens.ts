@@ -127,8 +127,12 @@ export const BG_OTHER = colors.gray[950];
 export const textPrimary = '#ffffff';
 export const text_secondary = colors.gray[300];
 export const TEXT_TERTIARY = colors.gray[400];
+/** Content / text — tertiary (e.g. matchup away code). */
+export const content_tertiary = TEXT_TERTIARY;
 export const textLight = '#7b7b7b';
 export const text_disabled = colors.gray[600];
+/** Content / text — disabled (e.g. matchup rest + time). */
+export const content_disabled = text_disabled;
 export const textOther = colors.gray[950];
 
 export const border_base = colors.gray[950];
@@ -159,7 +163,7 @@ export const state_warning_base = colors.orange[600];
 
 export const stateErrorDark = colors.red[400];
 export const state_error_base = '#e93544';
-export const stateErrorLight = colors.alpha.red.alpha24;
+export const stateErrorLight = colors.alpha.red.alpha16;
 
 export const state_success_dark = colors.green[400];
 export const stateSuccessBase = colors.green[600];
@@ -168,6 +172,7 @@ export const state_success_lighter = colors.alpha.green.alpha10;
 
 export const stateAwayDark = colors.yellow[400];
 export const state_away_base = colors.yellow[600];
+export const stateAwayLight = colors.alpha.yellow.alpha16;
 
 export const stateFeatureDark = colors.purple[400];
 export const state_feature_base = colors.purple[500];
@@ -209,6 +214,9 @@ export const SPACING_24 = 24;
 export const spacing_32 = 32;
 export const spacing40 = 40;
 export const SPACING_48 = 48;
+
+/** Odds pill and add control in card footers; matches `monoCompact` line (16) + vertical `spacing4` padding. */
+export const footer_odds_control_height = spacing4 + spacing4 + spacing16;
 
 // ============ RADIUS ============
 export const radius0 = 0;
@@ -332,7 +340,7 @@ export const typographyStyles = StyleSheet.create({
   subheadingXXSmall: { fontFamily: 'Inter', fontSize: 11, lineHeight: 12, letterSpacing: 1.32, fontWeight: '500' },
 
   monoRegular: { fontFamily: 'DM Mono', fontSize: 16, lineHeight: 24, letterSpacing: 0, fontWeight: '500' },
-  monoSmall: { fontFamily: mono_font, fontSize: 14, lineHeight: 20, letterSpacing: 0, fontWeight: '500' },
+  monoSmall: { fontFamily: 'DM Mono', fontSize: 14, lineHeight: 20, letterSpacing: 0, fontWeight: '500' },
   monoCompact: { fontFamily: 'DM Mono', fontSize: 12, lineHeight: 16, letterSpacing: 0, fontWeight: '500' },
   monoTiny: { fontFamily: mono_font, fontSize: 10, lineHeight: 16, letterSpacing: 0, fontWeight: '500' },
 });

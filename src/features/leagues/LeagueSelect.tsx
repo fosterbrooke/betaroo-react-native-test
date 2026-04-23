@@ -8,8 +8,7 @@ import {
   View,
 } from 'react-native';
 import { ChevronUpIcon } from '../../components/icons';
-import { border, fontSize, leagueSelect, spacing, text } from '../../tokens';
-import { typographyStyles } from '../../tokens/tokens';
+import * as tokens from '../../tokens';
 
 export type League = {
   id: string;
@@ -23,7 +22,7 @@ type LeagueSelectProps = {
   label?: string;
 };
 
-const ITEM_HEIGHT = leagueSelect.item.height;
+const ITEM_HEIGHT = 36;
 
 export function LeagueSelect({
   leagues,
@@ -132,7 +131,7 @@ export function LeagueSelect({
 
         {/* Chevron */}
         <Animated.View style={{ transform: [{ rotate: chevronRotate }] }}>
-          <ChevronUpIcon size={20} color={text.primary} />
+          <ChevronUpIcon size={20} color={tokens.colors.gray[0]} />
         </Animated.View>
       </TouchableOpacity>
 
@@ -173,56 +172,52 @@ export function LeagueSelect({
 
 const styles = StyleSheet.create({
   label: {
-    color: text.primary,
-    fontSize: fontSize[13],
+    color: tokens.colors.gray[0],
+    fontSize: 13,
     fontWeight: '500',
-    marginBottom: spacing[8],
+    marginBottom: tokens.spacing_8,
   },
   required: {
-    color: text.accent,
+    color: tokens.colors.green[400],
   },
   trigger: {
-    backgroundColor: leagueSelect.background,
-    borderRadius: leagueSelect.borderRadius,
-    height: leagueSelect.height,
-    paddingHorizontal: leagueSelect.paddingHorizontal,
-    paddingVertical: leagueSelect.paddingVertical,
+    backgroundColor: tokens.bg_base,
+    borderRadius: tokens.radius_8,
+    height: ITEM_HEIGHT,
+    paddingHorizontal: tokens.spacing16,
+    paddingVertical: 0,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     borderWidth: 1,
-    borderColor: border.subtle,
+    borderColor: tokens.colors.slate[800],
   },
   triggerOpen: {
-    borderColor: text.primary,
+    borderColor: tokens.colors.gray[0],
   },
   triggerLeft: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing[10],
+    gap: tokens.spacing10,
   },
   sportIcon: {
-    fontSize: fontSize[18],
+    fontSize: 18,
   },
   triggerText: {
-    color: leagueSelect.text,
-    ...typographyStyles.paragraphSmall,
+    color: tokens.colors.gray[0],
+    ...tokens.typographyStyles.paragraphSmall,
   },
   placeholderText: {
-    color: leagueSelect.placeholderText,
+    color: tokens.colors.gray[0],
   },
   dropdown: {
-    backgroundColor: leagueSelect.background,
-    marginTop: spacing[6],
+    backgroundColor: tokens.bg_base,
+    marginTop: tokens.SPACING_6,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: border.subtle,
-    borderRadius: leagueSelect.borderRadius,
-    shadowColor: leagueSelect.shadowColor,
-    shadowOffset: leagueSelect.shadowOffset,
-    shadowOpacity: leagueSelect.shadowOpacity,
-    shadowRadius: leagueSelect.shadowRadius,
-    elevation: leagueSelect.elevation,
+    borderColor: tokens.colors.slate[800],
+    borderRadius: tokens.radius_8,
+    ...tokens.selectDropdownShadow,
   },
   dropdownClosed: {
     marginTop: 0,
@@ -230,33 +225,33 @@ const styles = StyleSheet.create({
   },
   divider: {
     height: 1,
-    backgroundColor: border.subtle,
+    backgroundColor: tokens.colors.slate[800],
     marginHorizontal: 0,
   },
   item: {
     height: ITEM_HEIGHT,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: leagueSelect.item.paddingHorizontal,
-    gap: spacing[12],
-    backgroundColor: leagueSelect.item.defaultBackground,
+    paddingHorizontal: tokens.spacing16,
+    gap: tokens.SPACING_12,
+    backgroundColor: 'transparent',
   },
   itemSelected: {
-    backgroundColor: leagueSelect.item.selectedBackground,
+    backgroundColor: tokens.colors.alpha.green.alpha10,
   },
   leagueIcon: {
-    fontSize: fontSize[16],
-    color: text.primary,
+    fontSize: 16,
+    color: tokens.colors.gray[0],
   },
   leagueName: {
     flex: 1,
-    color: leagueSelect.item.text,
-    fontSize: leagueSelect.item.fontSize,
-    fontWeight: leagueSelect.item.fontWeight,
+    color: tokens.colors.gray[0],
+    fontSize: 14,
+    fontWeight: '500',
   },
   checkmark: {
-    color: text.primary,
-    fontSize: fontSize[16],
+    color: tokens.colors.gray[0],
+    fontSize: 16,
     fontWeight: '700',
   },
 });

@@ -1,12 +1,15 @@
 import React from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
-import { TeamCard, TeamCardData } from '../features/cards/TeamCard';
-import { background, spacing } from '../tokens';
+import {
+  TeamCard,
+  TeamCardData,
+  TEAM_CARD_HEIGHT,
+  TEAM_CARD_WIDTH,
+} from '../features/cards/TeamCard';
+import * as tokens from '../tokens';
 
-const HORIZONTAL_PADDING = spacing[16];
-const CARD_GAP = spacing[12];
-const CARD_WIDTH = 196;
-const CARD_HEIGHT = 200;
+const HORIZONTAL_PADDING = tokens.spacing16;
+const CARD_GAP = tokens.SPACING_12;
 
 const TEAM_CARDS: TeamCardData[] = [
   {
@@ -22,7 +25,7 @@ const TEAM_CARDS: TeamCardData[] = [
   {
     teamName: 'Los Angeles Lakers',
     betType: 'Moneyline',
-    confidenceLabel: 'STRONG',
+    confidenceLabel: 'FAIR',
     statWindow: 'L10',
     statPercentage: 78,
     odds: '-115',
@@ -42,7 +45,7 @@ const TEAM_CARDS: TeamCardData[] = [
   {
     teamName: 'Golden State Warriors',
     betType: 'Moneyline',
-    confidenceLabel: 'STRONG',
+    confidenceLabel: 'RISKY',
     statWindow: 'L5',
     statPercentage: 68,
     odds: '+195',
@@ -52,7 +55,7 @@ const TEAM_CARDS: TeamCardData[] = [
   {
     teamName: 'Miami Heat',
     betType: 'Total Over 214.5',
-    confidenceLabel: 'ELITE',
+    confidenceLabel: 'STRONG',
     statWindow: 'L10',
     statPercentage: 80,
     odds: '-108',
@@ -68,7 +71,7 @@ export function TeamCardsScreen() {
         data={TEAM_CARDS}
         horizontal
         showsHorizontalScrollIndicator={false}
-        snapToInterval={CARD_WIDTH + CARD_GAP}
+        snapToInterval={TEAM_CARD_WIDTH + CARD_GAP}
         snapToAlignment="start"
         decelerationRate="fast"
         contentContainerStyle={styles.list}
@@ -86,16 +89,16 @@ export function TeamCardsScreen() {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: background.base,
+    backgroundColor: tokens.bg_base,
     justifyContent: 'center',
   },
   list: {
     paddingHorizontal: HORIZONTAL_PADDING,
-    paddingVertical: spacing[24],
+    paddingVertical: tokens.SPACING_24,
     gap: CARD_GAP,
   },
   cardWrapper: {
-    width: CARD_WIDTH,
-    height: CARD_HEIGHT,
+    width: TEAM_CARD_WIDTH,
+    height: TEAM_CARD_HEIGHT,
   },
 });

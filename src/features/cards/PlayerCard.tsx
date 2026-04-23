@@ -1,27 +1,75 @@
 import React from 'react';
 import {
   Image,
+  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
+import Svg, { Circle, Defs, LinearGradient, Stop } from 'react-native-svg';
 import { AddButton } from '../../components/atoms/AddButton';
-import { ConfidenceBadge } from '../../components/atoms/ConfidenceBadge';
+import {
+  ConfidenceBadge,
+  type ConfidenceLabel,
+} from '../../components/atoms/ConfidenceBadge';
 import { OddsDisplay } from '../../components/atoms/OddsDisplay';
 import { StatPill, StatWindow } from '../../components/atoms/StatPill';
-import { ArrowRightIcon, InfoIcon, ShareIcon } from '../../components/icons';
-import { background, border, card, fontSize, positionBadge, spacing, text } from '../../tokens';
-import { typographyStyles } from '../../tokens/tokens';
+import * as tokens from '../../tokens';
+import NBASvg from '../../assets/svgs/first_tab/NBA.svg';
+import ArrowRightSvg from '../../assets/svgs/first_tab/arrow_right.svg';
+import InfoIcoSvg from '../../assets/svgs/first_tab/info_ico.svg';
+import UploadIcoSvg from '../../assets/svgs/first_tab/upload_ico.svg';
 
 const playerLogo = require('../../assets/svgs/second_tab/player_logo.png');
-const teamLogo = require('../../assets/svgs/second_tab/team-logo.png');
+
+/** Team badge fill (NBA); ring uses inset linear white stroke per spec. */
+const TEAM_LOGO_FILL = '#008348';
+const TEAM_LOGO_RING_STROKE = 0.44;
+
+function TeamLogoBadge() {
+  const gradId = React.useId().replace(/:/g, '_');
+  const cx = 50;
+  const cy = 50;
+  const rFill = 50 - TEAM_LOGO_RING_STROKE;
+  const rStroke = 50 - TEAM_LOGO_RING_STROKE / 2;
+  return (
+    <View style={styles.teamLogoCircle}>
+      <Svg
+        width="100%"
+        height="100%"
+        style={StyleSheet.absoluteFill}
+        viewBox="0 0 100 100"
+      >
+        <Defs>
+          <LinearGradient id={gradId} x1="0%" y1="0%" x2="0%" y2="100%">
+            <Stop offset="0%" stopColor="#FFFFFF" />
+            <Stop offset="100%" stopColor="#FFFFFF" />
+          </LinearGradient>
+        </Defs>
+        <Circle cx={cx} cy={cy} r={rFill} fill={TEAM_LOGO_FILL} />
+        <Circle
+          cx={cx}
+          cy={cy}
+          r={rStroke}
+          fill="none"
+          stroke={`url(#${gradId})`}
+          strokeWidth={TEAM_LOGO_RING_STROKE}
+          vectorEffect="nonScalingStroke"
+        />
+      </Svg>
+      <View style={styles.teamLogoSvgLayer} pointerEvents="none">
+        <NBASvg width="100%" height="100%" />
+      </View>
+    </View>
+  );
+}
 
 export type PlayerCardData = {
   playerName: string;
   position: string;
   propLine: string;
-  confidenceLabel: 'ELITE' | 'STRONG';
+  confidenceLabel: ConfidenceLabel;
   stats: Array<{ window: StatWindow; percentage: number }>;
   odds: string;
   matchup: string;
@@ -34,14 +82,12 @@ type PlayerCardProps = PlayerCardData & {
   onShare?: () => void;
 };
 
-// Avatar sizes matching the SVG proportions (player r=17, team r=7.4 → ratio ~2.3x)
 const CARD_WIDTH = 358;
 const CARD_HEIGHT = 126;
-const PLAYER_AVATAR_SIZE = 36;
-const TEAM_LOGO_SIZE = 16;
-// Overlap offset: team logo positioned at bottom-right of player circle
-const TEAM_LOGO_OFFSET = PLAYER_AVATAR_SIZE - TEAM_LOGO_SIZE + 4;
-const HEADER_ICON_SIZE = 14;
+const PLAYER_AVATAR_SIZE = 34;
+/** Match `TeamCard` header icon draw size. */
+const HEADER_ICON_DRAW_SIZE = 8.75;
+const HEADER_ICON_COLOR = tokens.colors.gray[400];
 
 export function PlayerCard({
   playerName,
@@ -60,22 +106,39 @@ export function PlayerCard({
     <View style={styles.card}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.matchupText} numberOfLines={1}>
-          <Text style={styles.matchupTeam}>{matchup.split(' ')[0]}</Text>
-          <Text style={styles.matchupRest}>
-            {' '}
+        <View style={styles.matchupRow}>
+          <Text style={[styles.matchupText, styles.matchupTeam]} numberOfLines={1}>
+            {matchup.split(' ')[0]}
+          </Text>
+          <Text
+            style={[styles.matchupText, styles.matchupRest]}
+            numberOfLines={1}
+            ellipsizeMode="tail"
+          >
             {matchup.slice(matchup.indexOf(' ') + 1)} · {gameTime}
           </Text>
-        </Text>
+        </View>
         <View style={styles.headerIcons}>
-          <TouchableOpacity onPress={onInfo} style={styles.iconBtn} accessibilityLabel="Info">
-            <InfoIcon size={HEADER_ICON_SIZE} />
+          <TouchableOpacity onPress={onInfo} style={styles.iconWrap} accessibilityLabel="Info">
+            <InfoIcoSvg
+              width={HEADER_ICON_DRAW_SIZE}
+              height={HEADER_ICON_DRAW_SIZE}
+              color={HEADER_ICON_COLOR}
+            />
           </TouchableOpacity>
-          <TouchableOpacity onPress={onShare} style={styles.iconBtn} accessibilityLabel="Share">
-            <ShareIcon size={HEADER_ICON_SIZE} />
+          <TouchableOpacity onPress={onShare} style={styles.iconWrap} accessibilityLabel="Share">
+            <UploadIcoSvg
+              width={HEADER_ICON_DRAW_SIZE}
+              height={HEADER_ICON_DRAW_SIZE}
+              color={HEADER_ICON_COLOR}
+            />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.iconBtn} accessibilityLabel="Next">
-            <ArrowRightIcon size={HEADER_ICON_SIZE} />
+          <TouchableOpacity style={styles.iconWrap} accessibilityLabel="Next">
+            <ArrowRightSvg
+              width={HEADER_ICON_DRAW_SIZE}
+              height={HEADER_ICON_DRAW_SIZE}
+              color={HEADER_ICON_COLOR}
+            />
           </TouchableOpacity>
         </View>
       </View>
@@ -89,15 +152,13 @@ export function PlayerCard({
             <Image source={playerLogo} style={styles.playerImage} resizeMode="cover" />
           </View>
           {/* Team logo — absolute positioned at bottom-right */}
-          <View style={[styles.teamLogoCircle, { top: TEAM_LOGO_OFFSET, left: TEAM_LOGO_OFFSET }]}>
-            <Image source={teamLogo} style={styles.teamLogoImage} resizeMode="cover" />
-          </View>
+          <TeamLogoBadge />
         </View>
 
         {/* Player info */}
         <View style={styles.playerInfo}>
           <View style={styles.nameRow}>
-            <Text style={styles.playerName}>{playerName}</Text>
+            <Text style={[tokens.typographyStyles.labelSmall, styles.playerNameColor]}>{playerName}</Text>
             <View style={styles.positionBadge}>
               <Text style={styles.positionText}>{position}</Text>
             </View>
@@ -105,7 +166,7 @@ export function PlayerCard({
               <ConfidenceBadge label={confidenceLabel} />
             </View>
           </View>
-          <Text style={styles.propLine}>{propLine}</Text>
+          <Text style={[tokens.typographyStyles.paragraphTiny, styles.propLineColor]}>{propLine}</Text>
         </View>
       </View>
 
@@ -113,8 +174,11 @@ export function PlayerCard({
       <View style={styles.footer}>
         <View style={styles.statsRow}>
           <View style={styles.statsLeft}>
-            {stats.map(stat => (
-              <StatPill key={stat.window} window={stat.window} percentage={stat.percentage} />
+            {stats.map((stat, index) => (
+              <React.Fragment key={stat.window}>
+                <StatPill window={stat.window} percentage={stat.percentage} />
+                {index < stats.length - 1 ? <View style={styles.statSeparator} /> : null}
+              </React.Fragment>
             ))}
           </View>
           <View style={styles.statsRight}>
@@ -129,43 +193,56 @@ export function PlayerCard({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: background.primary,
-    borderRadius: card.borderRadius,
+    backgroundColor: tokens.bg_primary,
+    borderRadius: tokens.radius_8,
     overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: tokens.borderDark,
     width: CARD_WIDTH,
     height: CARD_HEIGHT,
-    shadowColor: card.shadowColor,
-    shadowOffset: card.shadowOffset,
-    shadowOpacity: card.shadowOpacity,
-    shadowRadius: card.shadowRadius,
-    elevation: card.elevation,
+    ...tokens.cardShadowLarge,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: spacing[10],
-    paddingVertical: spacing[8],
+    paddingLeft: tokens.SPACING_12,
+    paddingRight: tokens.spacing_8,
+    paddingTop: tokens.SPACING_6,
+    paddingBottom: tokens.SPACING_6,
     borderBottomWidth: 1,
-    borderBottomColor: '#202020',
+    borderBottomColor: tokens.borderDark,
+  },
+  matchupRow: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: tokens.spacing4,
+    minWidth: 0,
   },
   matchupText: {
-    color: text.secondary,
-    fontSize: fontSize[11],
+    fontSize: 10,
     fontWeight: '500',
   },
   matchupTeam: {
-    color: text.tertiary,
+    flexShrink: 0,
+    color: tokens.content_tertiary,
   },
   matchupRest: {
-    color: text.disabled,
+    flex: 1,
+    minWidth: 0,
+    color: tokens.content_disabled,
   },
   headerIcons: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing[0],
+    gap: tokens.SPACING_0,
   },
-  iconBtn: {
+  iconWrap: {
+    width: tokens.spacing_14,
+    height: tokens.spacing_14,
+    alignItems: 'center',
+    justifyContent: 'center',
     padding: 0,
   },
   body: {
@@ -173,14 +250,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: spacing[12],
-    paddingVertical: spacing[6],
-    gap: spacing[10],
+    padding: tokens.SPACING_12,
+    gap: tokens.spacing_8,
   },
   avatarBlock: {
     width: PLAYER_AVATAR_SIZE,
     height: PLAYER_AVATAR_SIZE,
     position: 'relative',
+    overflow: 'visible',
   },
   playerAvatarCircle: {
     width: PLAYER_AVATAR_SIZE,
@@ -189,7 +266,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#BB9753',
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: border.subtle,
+    borderColor: tokens.colors.slate[800],
   },
   playerImage: {
     width: '100%',
@@ -197,72 +274,86 @@ const styles = StyleSheet.create({
   },
   teamLogoCircle: {
     position: 'absolute',
-    width: TEAM_LOGO_SIZE,
-    height: TEAM_LOGO_SIZE,
-    borderRadius: TEAM_LOGO_SIZE / 2,
-    backgroundColor: '#008348',
+    left: '62.5%',
+    right: '-6.25%',
+    top: '59.38%',
+    bottom: '-3.12%',
+    borderRadius: tokens.RADIUS_FULL,
     overflow: 'hidden',
-    borderWidth: 1.5,
-    borderColor: card.background,
   },
-  teamLogoImage: {
-    width: '100%',
-    height: '100%',
+  teamLogoSvgLayer: {
+    ...StyleSheet.absoluteFill,
   },
   playerInfo: {
     flex: 1,
-    gap: spacing[2],
+    gap: tokens.spacing_2,
   },
   nameRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing[4],
+    gap: tokens.spacing4,
     flexWrap: 'wrap',
   },
-  playerName: {
-    color: text.primary,
-    ...typographyStyles.labelSmall,
+  playerNameColor: {
+    color: tokens.colors.gray[0],
   },
   positionBadge: {
-    backgroundColor: positionBadge.background,
-    borderRadius: positionBadge.borderRadius,
-    paddingHorizontal: positionBadge.paddingHorizontal,
-    paddingVertical: positionBadge.paddingVertical,
+    backgroundColor: tokens.state_faded_lighter,
+    borderRadius: tokens.RADIUS_4,
+    paddingHorizontal: tokens.spacing_2,
+    paddingVertical: tokens.spacing_2,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   positionText: {
-    color: positionBadge.text,
-    fontSize: positionBadge.fontSize,
-    fontWeight: positionBadge.fontWeight,
+    fontFamily: Platform.select({
+      ios: 'DMMono-Regular',
+      android: 'DMMono-Regular',
+      default: 'DMMono-Regular',
+    }),
+    fontSize: 9,
+    lineHeight: 10,
+    fontWeight: '500',
+    letterSpacing: 9 * 0.02,
+    color: tokens.stateFadedBase,
+    textAlign: 'center',
   },
   badgePushed: {
     marginLeft: 'auto',
   },
-  propLine: {
-    color: text.primary,
-    ...typographyStyles.paragraphTiny,
+  propLineColor: {
+    color: tokens.colors.gray[0],
   },
   footer: {
     marginTop: 'auto',
     borderTopWidth: 1,
-    borderTopColor: '#202020',
+    borderTopColor: tokens.borderDark,
   },
   statsRow: {
     flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: spacing[12],
-    paddingTop: spacing[8],
-    paddingBottom: spacing[8],
+    alignItems: 'stretch',
+    height: 36,
+    gap: tokens.spacing4,
+    paddingHorizontal: tokens.SPACING_12,
     justifyContent: 'space-between',
   },
   statsLeft: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing[4],
+    justifyContent: 'center',
     flexShrink: 1,
+  },
+  statSeparator: {
+    width: 1,
+    height: 16,
+    alignSelf: 'center',
+    marginHorizontal: tokens.SPACING_6,
+    backgroundColor: tokens.bg_secondary,
   },
   statsRight: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing[4],
+    justifyContent: 'center',
+    gap: tokens.spacing4,
   },
 });
