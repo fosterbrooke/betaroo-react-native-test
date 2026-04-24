@@ -14,6 +14,9 @@ const TEAM_CARD_GAP = tokens.SPACING_12;
 const PLAYER_CARD_WIDTH = 358;
 const PLAYER_CARD_HEIGHT = 126;
 
+/** Viewport ≈ 3 player card heights so the list scrolls (layout QA). */
+const VERTICAL_PLAYER_LIST_HEIGHT = 3 * PLAYER_CARD_HEIGHT;
+
 const TEAM_CARDS: TeamCardData[] = [
   {
     teamName: 'Denver Nuggets',
@@ -67,21 +70,8 @@ const TEAM_CARDS: TeamCardData[] = [
   },
 ];
 
+/** One player card per confidence tier (vertical list QA). */
 const PLAYER_CARDS: PlayerCardData[] = [
-  {
-    playerName: 'Derrick White',
-    position: 'SG',
-    propLine: '+6 Assists',
-    confidenceLabel: 'STRONG',
-    stats: [
-      { window: 'L5', percentage: 75 },
-      { window: 'L10', percentage: 72 },
-      { window: 'L20', percentage: 71 },
-    ],
-    odds: '+172',
-    matchup: 'CEL @ GSW',
-    gameTime: 'FRI 10AM',
-  },
   {
     playerName: 'Nikola Jokic',
     position: 'C',
@@ -97,6 +87,20 @@ const PLAYER_CARDS: PlayerCardData[] = [
     gameTime: 'FRI 8PM',
   },
   {
+    playerName: 'Derrick White',
+    position: 'SG',
+    propLine: '+6 Assists',
+    confidenceLabel: 'STRONG',
+    stats: [
+      { window: 'L5', percentage: 75 },
+      { window: 'L10', percentage: 72 },
+      { window: 'L20', percentage: 71 },
+    ],
+    odds: '+172',
+    matchup: 'CEL @ GSW',
+    gameTime: 'FRI 10AM',
+  },
+  {
     playerName: 'LeBron James',
     position: 'SF',
     propLine: '+8 Rebounds',
@@ -109,20 +113,6 @@ const PLAYER_CARDS: PlayerCardData[] = [
     odds: '+145',
     matchup: 'LAL @ DAL',
     gameTime: 'SAT 6PM',
-  },
-  {
-    playerName: 'Stephen Curry',
-    position: 'PG',
-    propLine: '+4.5 Threes',
-    confidenceLabel: 'ELITE',
-    stats: [
-      { window: 'L5', percentage: 88 },
-      { window: 'L10', percentage: 81 },
-      { window: 'L20', percentage: 79 },
-    ],
-    odds: '+162',
-    matchup: 'LAL @ GSW',
-    gameTime: 'FRI 7PM',
   },
   {
     playerName: 'Jayson Tatum',
@@ -142,7 +132,7 @@ const PLAYER_CARDS: PlayerCardData[] = [
 
 function HomeListHeader() {
   return (
-    <>
+    <View style={styles.homeHeaderSection}>
       <Text style={styles.title}>Teams</Text>
       <FlatList
         data={TEAM_CARDS}
@@ -161,26 +151,36 @@ function HomeListHeader() {
         )}
       />
       <Text style={[styles.title, styles.playersHeading]}>Players</Text>
-    </>
+    </View>
   );
+}
+
+function HomePlayerSeparator() {
+  return <View style={styles.playerListSeparator} />;
 }
 
 export function HomeScreen() {
   return (
-    <FlatList
-      style={styles.screen}
-      data={PLAYER_CARDS}
-      keyExtractor={(_, i) => `player-${i}`}
-      ListHeaderComponent={HomeListHeader}
-      ListHeaderComponentStyle={styles.listHeader}
-      contentContainerStyle={styles.listContent}
-      showsVerticalScrollIndicator
-      renderItem={({ item }) => (
-        <View style={styles.playerCardWrapper}>
-          <PlayerCard {...item} />
-        </View>
-      )}
-    />
+    <View style={styles.screen}>
+      <FlatList
+        style={styles.verticalPlayerList}
+        data={PLAYER_CARDS}
+        keyExtractor={(_, i) => `player-${i}`}
+        ListHeaderComponent={HomeListHeader}
+        ListHeaderComponentStyle={styles.listHeader}
+        contentContainerStyle={styles.listContent}
+        ItemSeparatorComponent={HomePlayerSeparator}
+        showsVerticalScrollIndicator
+        scrollEnabled
+        nestedScrollEnabled
+        removeClippedSubviews={false}
+        renderItem={({ item }) => (
+          <View style={styles.playerCardWrapper}>
+            <PlayerCard {...item} />
+          </View>
+        )}
+      />
+    </View>
   );
 }
 
@@ -189,6 +189,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: tokens.bg_base,
   },
+  verticalPlayerList: {
+    height: VERTICAL_PLAYER_LIST_HEIGHT,
+    width: '100%',
+  },
   listHeader: {
     flexGrow: 0,
   },
@@ -196,8 +200,16 @@ const styles = StyleSheet.create({
     paddingTop: tokens.spacing16,
     paddingBottom: tokens.SPACING_24,
     paddingHorizontal: tokens.spacing16,
-    gap: tokens.SPACING_12,
     alignItems: 'center',
+    flexGrow: 0,
+  },
+  homeHeaderSection: {
+    alignSelf: 'stretch',
+    marginBottom: tokens.SPACING_12,
+  },
+  playerListSeparator: {
+    height: tokens.SPACING_12,
+    alignSelf: 'stretch',
   },
   title: {
     alignSelf: 'stretch',

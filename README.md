@@ -8,6 +8,16 @@ React Native app showcasing a simple sports picks UI.
 - **Leagues tab**: a multi-select dropdown with custom chevron icons
 - **Design tokens**: shared colors/spacing/typography in `src/tokens/`
 
+## Demo
+
+Walkthrough / QA recording — inline player (works in many local Markdown previews, e.g. VS Code / Cursor):
+
+<video controls playsinline width="100%" style="max-width: 720px;">
+  <source src="demo/test.mp4" type="video/mp4" />
+</video>
+
+On **github.com**, README rendering often does not load relative video URLs; use the file link instead: [`demo/test.mp4`](demo/test.mp4) (clone the repo or open **Raw** from the file view if needed).
+
 ## Prerequisites
 
 - **Node.js**: `>= 22.11.0` (see `package.json` -> `engines.node`)

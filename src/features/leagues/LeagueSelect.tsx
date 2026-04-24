@@ -40,7 +40,8 @@ export function LeagueSelect({
 
   const open = useCallback(() => {
     setIsOpen(true);
-    const targetHeight = ITEM_HEIGHT * leagues.length;
+    const panelPadV = tokens.spacing4 * 2;
+    const targetHeight = panelPadV + ITEM_HEIGHT * leagues.length;
 
     Animated.parallel([
       Animated.timing(animatedHeight, {
@@ -59,6 +60,7 @@ export function LeagueSelect({
   }, [animatedHeight, chevronAnim, leagues.length]);
 
   const close = useCallback(() => {
+    setIsOpen(false);
     Animated.parallel([
       Animated.timing(animatedHeight, {
         toValue: 0,
@@ -72,7 +74,7 @@ export function LeagueSelect({
         easing: Easing.in(Easing.quad),
         useNativeDriver: true,
       }),
-    ]).start(() => setIsOpen(false));
+    ]).start();
   }, [animatedHeight, chevronAnim]);
 
   const toggle = useCallback(() => {
@@ -124,15 +126,19 @@ export function LeagueSelect({
       >
         <View style={styles.triggerLeft}>
           <Text style={styles.sportIcon}>🏀</Text>
-          <Text style={[styles.triggerText, displayCount === 0 && styles.placeholderText]}>
+          <Text
+            style={[styles.triggerText, displayCount === 0 && styles.placeholderText]}
+            numberOfLines={1}
+          >
             {triggerLabel}
           </Text>
         </View>
 
-        {/* Chevron */}
-        <Animated.View style={{ transform: [{ rotate: chevronRotate }] }}>
-          <ChevronUpIcon size={20} color={tokens.colors.gray[0]} />
-        </Animated.View>
+        <View style={styles.chevronWrap}>
+          <Animated.View style={{ transform: [{ rotate: chevronRotate }] }}>
+            <ChevronUpIcon size={20} color={tokens.border_inverse} />
+          </Animated.View>
+        </View>
       </TouchableOpacity>
 
       {/* Dropdown list */}
@@ -143,7 +149,6 @@ export function LeagueSelect({
           { height: animatedHeight },
         ]}
       >
-        <View style={styles.divider} />
         {leagues.map(league => {
           const isSelected = selectedIds.includes(league.id);
           return (
@@ -159,9 +164,13 @@ export function LeagueSelect({
               accessibilityState={{ checked: isSelected }}
               accessibilityLabel={league.name}
             >
-              <Text style={styles.leagueIcon}>⊕</Text>
-              <Text style={styles.leagueName}>{league.name}</Text>
-              {isSelected && <Text style={styles.checkmark}>✓</Text>}
+              <Text style={[styles.leagueIcon, isSelected && styles.leagueRowSelected]}>
+                ⊕
+              </Text>
+              <Text style={[styles.leagueName, isSelected && styles.leagueRowSelected]}>
+                {league.name}
+              </Text>
+              {isSelected ? <Text style={styles.checkmark}>✓</Text> : null}
             </TouchableOpacity>
           );
         })}
@@ -183,50 +192,62 @@ const styles = StyleSheet.create({
   trigger: {
     backgroundColor: tokens.bg_base,
     borderRadius: tokens.radius_8,
-    height: ITEM_HEIGHT,
-    paddingHorizontal: tokens.spacing16,
-    paddingVertical: 0,
+    paddingLeft: tokens.spacing10,
+    paddingRight: tokens.spacing_8,
+    paddingVertical: tokens.spacing_8,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    gap: tokens.spacing_8,
     borderWidth: 1,
-    borderColor: tokens.colors.slate[800],
+    borderColor: tokens.borderPrimary,
   },
   triggerOpen: {
-    borderColor: tokens.colors.gray[0],
+    borderColor: tokens.border_inverse,
   },
   triggerLeft: {
+    flex: 1,
+    minWidth: 0,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: tokens.spacing10,
+    gap: tokens.spacing_8,
+  },
+  chevronWrap: {
+    width: 20,
+    height: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   sportIcon: {
     fontSize: 18,
   },
   triggerText: {
-    color: tokens.colors.gray[0],
     ...tokens.typographyStyles.paragraphSmall,
+    flexShrink: 1,
+    color: tokens.border_inverse,
   },
   placeholderText: {
-    color: tokens.colors.gray[0],
+    color: tokens.text_secondary,
   },
   dropdown: {
     backgroundColor: tokens.bg_base,
     marginTop: tokens.SPACING_6,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: tokens.colors.slate[800],
+    borderColor: tokens.borderPrimary,
     borderRadius: tokens.radius_8,
+    paddingVertical: tokens.spacing4,
+    paddingHorizontal: tokens.spacing4,
     ...tokens.selectDropdownShadow,
   },
   dropdownClosed: {
     marginTop: 0,
     borderWidth: 0,
-  },
-  divider: {
-    height: 1,
-    backgroundColor: tokens.colors.slate[800],
-    marginHorizontal: 0,
+    paddingVertical: 0,
+    paddingHorizontal: 0,
+    elevation: 0,
+    shadowOpacity: 0,
+    shadowOffset: { width: 0, height: 0 },
+    shadowRadius: 0,
   },
   item: {
     height: ITEM_HEIGHT,
@@ -237,20 +258,23 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   itemSelected: {
-    backgroundColor: tokens.colors.alpha.green.alpha10,
+    backgroundColor: tokens.bg_base,
   },
   leagueIcon: {
     fontSize: 16,
-    color: tokens.colors.gray[0],
+    color: tokens.textPrimary,
   },
   leagueName: {
     flex: 1,
-    color: tokens.colors.gray[0],
+    color: tokens.textPrimary,
     fontSize: 14,
     fontWeight: '500',
   },
+  leagueRowSelected: {
+    color: tokens.border_inverse,
+  },
   checkmark: {
-    color: tokens.colors.gray[0],
+    color: tokens.border_inverse,
     fontSize: 16,
     fontWeight: '700',
   },

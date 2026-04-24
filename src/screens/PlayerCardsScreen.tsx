@@ -6,21 +6,11 @@ import * as tokens from '../tokens';
 const CARD_WIDTH = 358;
 const CARD_HEIGHT = 126;
 
+/** Viewport ≈ 3 player card heights so the list scrolls (layout QA). */
+const VERTICAL_LIST_HEIGHT = 3 * CARD_HEIGHT;
+
+/** One player card per confidence tier (vertical list QA). */
 const PLAYER_CARDS: PlayerCardData[] = [
-  {
-    playerName: 'Derrick White',
-    position: 'SG',
-    propLine: '+6 Assists',
-    confidenceLabel: 'STRONG',
-    stats: [
-      { window: 'L5', percentage: 75 },
-      { window: 'L10', percentage: 72 },
-      { window: 'L20', percentage: 71 },
-    ],
-    odds: '+172',
-    matchup: 'CEL @ GSW',
-    gameTime: 'FRI 10AM',
-  },
   {
     playerName: 'Nikola Jokic',
     position: 'C',
@@ -36,6 +26,20 @@ const PLAYER_CARDS: PlayerCardData[] = [
     gameTime: 'FRI 8PM',
   },
   {
+    playerName: 'Derrick White',
+    position: 'SG',
+    propLine: '+6 Assists',
+    confidenceLabel: 'STRONG',
+    stats: [
+      { window: 'L5', percentage: 75 },
+      { window: 'L10', percentage: 72 },
+      { window: 'L20', percentage: 71 },
+    ],
+    odds: '+172',
+    matchup: 'CEL @ GSW',
+    gameTime: 'FRI 10AM',
+  },
+  {
     playerName: 'LeBron James',
     position: 'SF',
     propLine: '+8 Rebounds',
@@ -48,20 +52,6 @@ const PLAYER_CARDS: PlayerCardData[] = [
     odds: '+145',
     matchup: 'LAL @ DAL',
     gameTime: 'SAT 6PM',
-  },
-  {
-    playerName: 'Stephen Curry',
-    position: 'PG',
-    propLine: '+4.5 Threes',
-    confidenceLabel: 'ELITE',
-    stats: [
-      { window: 'L5', percentage: 88 },
-      { window: 'L10', percentage: 81 },
-      { window: 'L20', percentage: 79 },
-    ],
-    odds: '+162',
-    matchup: 'LAL @ GSW',
-    gameTime: 'FRI 7PM',
   },
   {
     playerName: 'Jayson Tatum',
@@ -79,13 +69,22 @@ const PLAYER_CARDS: PlayerCardData[] = [
   },
 ];
 
+function PlayerListSeparator() {
+  return <View style={styles.playerListSeparator} />;
+}
+
 export function PlayerCardsScreen() {
   return (
     <View style={styles.screen}>
       <FlatList
+        style={styles.verticalList}
         data={PLAYER_CARDS}
-        showsVerticalScrollIndicator={false}
+        showsVerticalScrollIndicator
+        scrollEnabled
+        nestedScrollEnabled
+        removeClippedSubviews={false}
         contentContainerStyle={styles.list}
+        ItemSeparatorComponent={PlayerListSeparator}
         keyExtractor={(_, i) => String(i)}
         renderItem={({ item }) => (
           <View style={styles.cardWrapper}>
@@ -102,10 +101,18 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: tokens.bg_base,
   },
+  verticalList: {
+    height: VERTICAL_LIST_HEIGHT,
+    width: '100%',
+  },
   list: {
     padding: tokens.spacing16,
-    gap: tokens.SPACING_12,
     alignItems: 'center',
+    flexGrow: 0,
+  },
+  playerListSeparator: {
+    height: tokens.SPACING_12,
+    alignSelf: 'stretch',
   },
   cardWrapper: {
     width: CARD_WIDTH,
